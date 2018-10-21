@@ -39,6 +39,19 @@ public class EmlFileNameBuilder {
      * @throws MessagingException in case that the message properties cannot be accessed
      */
     public String buildFileName(final Message message) throws MessagingException {
+        return buildFileName(message, "");
+    }
+
+    /**
+     * Builds constructs a valid file name based on the user defined pattern and the properties of the message. The
+     * file name will have only valid characters and a max. length of 255 chars.
+     *
+     * @param message the message that contains the various properties to be used in the file name pattern
+     * @param appendix a appendix that will be added right before the file extension
+     * @return a valid file name
+     * @throws MessagingException in case that the message properties cannot be accessed
+     */
+    public String buildFileName(final Message message, final String appendix) throws MessagingException {
         // Replace placeholders of the fileNamePattern
         String temp = getFileNamePattern().replace(PLACEHOLDER_DATE, getMessageDate(message));
         temp = temp.replace(PLACEHOLDER_SENDER, getSender(message));
@@ -49,11 +62,11 @@ public class EmlFileNameBuilder {
         temp = temp.replaceAll("[^a-zA-Z0-9\\.\\-\\ @]", "_");
 
         // restrict to max. 255 characters length
-        if (temp.length() > 250)
-            temp.subSequence(0, 250);
+        if (temp.length() > 250 - appendix.length())
+            temp.subSequence(0, 250 - appendix.length());
 
         // append .eml suffix
-        return temp += ".eml";
+        return temp += appendix + ".eml";
     }
 
     /**

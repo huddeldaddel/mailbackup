@@ -57,9 +57,11 @@ public class MailbackupApplication {
 
             loader.addMessageHandler(consoleWriter);
 
-            emlFileNameBuilder.setFileNamePattern(line.hasOption(OPT_OUTPUT_PATTERN) ? line.getOptionValue(OPT_OUTPUT_PATTERN) : DEFAULT_PATTERN);
+            emlFileNameBuilder.setFileNamePattern(line.hasOption(OPT_OUTPUT_PATTERN) ?
+                    line.getOptionValue(OPT_OUTPUT_PATTERN) : DEFAULT_PATTERN);
             emlFileWriter.setFlattenStructure(line.hasOption(OPT_FLATTEN));
-            emlFileWriter.setOutputFolder(Paths.get(line.hasOption(OPT_OUTPUT_DIR) ? line.getOptionValue(OPT_OUTPUT_DIR) : System.getProperty("user.dir")));
+            emlFileWriter.setOutputFolder(Paths.get(line.hasOption(OPT_OUTPUT_DIR) ?
+                    line.getOptionValue(OPT_OUTPUT_DIR) : System.getProperty("user.dir")));
             loader.addMessageHandler(emlFileWriter);
 
             if(line.hasOption(OPT_DELETE))
