@@ -6,8 +6,6 @@ import javax.mail.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Connects to the specified IMAP server using the specified login credentials. Lists all e-mails that are stored in the
@@ -16,8 +14,6 @@ import java.util.logging.Logger;
  * @author Thomas Werner
  */
 public class Loader {
-
-    private final static Logger LOGGER = Logger.getLogger(Loader.class.getName());
 
     private final List<MessageLoadedListener> messageHandlers = new LinkedList<>();
     private final List<MessageFilter> filters = new LinkedList<>();
@@ -45,8 +41,7 @@ public class Loader {
         final Session session = Session.getDefaultInstance(props, null);
         Store store = null;
         try {
-            if(LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Attempting to connect to " + conf.getHost() + " as " + conf.getUser());
+            System.out.println("Connecting " + conf.getHost() + " as " + conf.getUser());
 
             store = session.getStore(protocol);
             try {
@@ -56,9 +51,7 @@ public class Loader {
                     store.connect(conf.getHost(), conf.getUser(), conf.getPassword());
                 }
             } catch(final MessagingException me) {
-                if(LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("Unable to connect to " + conf.getHost() + " as " + conf.getUser() +
-                            ": " + me.getMessage());
+                System.err.println("Unable to connect to " + conf.getHost() + " as " + conf.getUser() + ": " + me.getMessage());
                 return;
             }
 
@@ -89,9 +82,7 @@ public class Loader {
             try {
                 handler.messageLoaded(message, folder.getFullName());
             } catch(final Exception ex) {
-                if(LOGGER.isLoggable(Level.WARNING))
-                    LOGGER.warning("The message " + message.getSubject() + " cannot be processed: " +
-                            ex.getMessage());
+                System.err.println("The message " + message.getSubject() + " cannot be processed: " + ex.getMessage());
             }
         }
     }

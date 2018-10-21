@@ -13,8 +13,6 @@ import javax.mail.MessagingException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAULT_PATTERN;
 
@@ -32,8 +30,6 @@ public class MailbackupApplication {
     private static final String OPT_SSL = "ssl";
     private static final String OPT_USERNAME = "username";
     private static final String OPT_VERBOSE = "verbose";
-
-    private static final Logger LOGGER = Logger.getLogger(MailbackupApplication.class.getName());
 
     private final ConsoleWriter consoleWriter;
     private final Loader loader;
@@ -81,13 +77,11 @@ public class MailbackupApplication {
             try {
                 loader.start(buildConfiguration(line));
             } catch(final MessagingException me) {
-                if(LOGGER.isLoggable(Level.SEVERE))
-                    LOGGER.severe("An error occurred: " + me.getMessage() + "\n" + me.toString());
+                System.err.println("An error occurred: " + me.getMessage() + "\n" + me.toString());
             }
 
         } catch(final ParseException | java.text.ParseException exp) {
-            if(LOGGER.isLoggable(Level.SEVERE))
-                LOGGER.severe("Parsing cmd options failed. Reason: " + exp.getMessage());
+            System.err.println("Parsing cmd options failed. Reason: " + exp.getMessage());
         }
     }
 

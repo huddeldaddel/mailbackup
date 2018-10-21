@@ -49,7 +49,7 @@ public class ConsoleWriter implements MessageLoadedListener {
         }
     }
 
-    private String getMessageDate(Message message) throws MessagingException {
+    private String getMessageDate(final Message message) throws MessagingException {
         Date date = message.getReceivedDate();
         if(null == date)
             date = message.getSentDate();

@@ -10,12 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class EmlFileWriter implements MessageLoadedListener {
-
-    private static final Logger LOGGER = Logger.getLogger(EmlFileWriter.class.getName());
 
     private final EmlFileNameBuilder fileNameBuilder;
     private boolean flattenStructure = false;
@@ -45,8 +41,6 @@ public class EmlFileWriter implements MessageLoadedListener {
     public void messageLoaded(final Message message, final String folderName) throws MessagingException {
         try {
             if (!Files.exists(getOutputFolder())) {
-                if (LOGGER.isLoggable(Level.INFO))
-                    LOGGER.info("Creating output directory: " + getOutputFolder().toString());
                 Files.createDirectories(getOutputFolder());
             }
 
@@ -67,8 +61,6 @@ public class EmlFileWriter implements MessageLoadedListener {
             if(!path.getParentFile().exists())
                 path.getParentFile().mkdirs();
 
-            if (LOGGER.isLoggable(Level.INFO))
-                LOGGER.info("Writing file to output directory: " + path.getAbsolutePath());
             message.writeTo(new FileOutputStream(path));
         } catch (IOException iox) {
             throw new MessagingException("Unable to write message to output directory: " + iox.getMessage(), iox);
