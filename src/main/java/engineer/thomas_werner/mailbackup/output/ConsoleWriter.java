@@ -4,6 +4,7 @@ import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,38 +16,23 @@ import java.util.Date;
  */
 public class ConsoleWriter implements MessageLoadedListener {
 
-    private boolean verbose;
-    private boolean silent;
     private final DateFormat dateFormat = new SimpleDateFormat();
-
-    public boolean isVerbose() {
-        return verbose;
-    }
-
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-    }
-
-    public boolean isSilent() {
-        return silent;
-    }
-
-    public void setSilent(boolean silent) {
-        this.silent = silent;
-    }
 
     @Override
     public void messageLoaded(final Message message, final String folderName) throws MessagingException {
-        if(isVerbose()) {
-            System.out.println(new StringBuilder().append(folderName)
-                    .append(": ")
-                    .append(getMessageDate(message))
-                    .append(" ")
-                    .append(message.getSubject())
-                    .toString());
-        } else if(!isSilent()) {
-            System.out.print(".");
-        }
+        String subject = message.getSubject().substring(0, Math.min(50, message.getSubject().length()));
+        if(50 > subject.length())
+            subject =  subject + " ".repeat(50 - subject.length());
+
+        final String txt = new StringBuilder()
+                .append("\r")
+                .append(folderName.replaceAll("\\.", File.separator))
+                .append(": ")
+                .append(getMessageDate(message))
+                .append(" ")
+                .append(subject)
+                .toString();
+        System.out.print(txt);
     }
 
     private String getMessageDate(final Message message) throws MessagingException {

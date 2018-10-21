@@ -26,10 +26,8 @@ public class MailbackupApplication {
     private static final String OPT_PASSWORD = "password";
     private static final String OPT_PORT = "port";
     private static final String OPT_SERVER = "hostname";
-    private static final String OPT_SILENT = "silent";
     private static final String OPT_SSL = "ssl";
     private static final String OPT_USERNAME = "username";
-    private static final String OPT_VERBOSE = "verbose";
 
     private final ConsoleWriter consoleWriter;
     private final Loader loader;
@@ -57,8 +55,6 @@ public class MailbackupApplication {
             if(!isOptionSetComplete(line))
                 return;
 
-            consoleWriter.setVerbose(line.hasOption(OPT_VERBOSE));
-            consoleWriter.setSilent(line.hasOption(OPT_SILENT));
             loader.addMessageHandler(consoleWriter);
 
             emlFileNameBuilder.setFileNamePattern(line.hasOption(OPT_OUTPUT_PATTERN) ? line.getOptionValue(OPT_OUTPUT_PATTERN) : DEFAULT_PATTERN);
@@ -91,11 +87,12 @@ public class MailbackupApplication {
      * @return CommandLine options
      */
     private static Options buildCmdOptions() {
-        return new Options().addOption(Option.builder(OPT_SERVER)
-                .hasArg(true)
-                .desc("hostname of the IMAP server")
-                .required(true)
-                .build())
+        return new Options()
+                .addOption(Option.builder(OPT_SERVER)
+                        .hasArg(true)
+                        .desc("hostname of the IMAP server")
+                        .required(true)
+                        .build())
                 .addOption(Option.builder(OPT_USERNAME)
                         .hasArg(true)
                         .desc("user name")
@@ -112,9 +109,7 @@ public class MailbackupApplication {
                 .addOption(OPT_OUTPUT_DIR, true, "directory to write the messages to")
                 .addOption(OPT_OUTPUT_PATTERN, true, "name pattern for the message files")
                 .addOption(OPT_PORT, true, "port number of the IMAP server")
-                .addOption(OPT_SILENT, false, "specify this flag to show no status output")
-                .addOption(OPT_SSL, false, "use SSL / TLS encryption")
-                .addOption(OPT_VERBOSE, false, "specify this flag to show verbose status output");
+                .addOption(OPT_SSL, false, "use SSL / TLS encryption");
     }
 
     /**
