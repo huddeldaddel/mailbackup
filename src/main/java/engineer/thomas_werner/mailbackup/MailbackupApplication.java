@@ -8,9 +8,6 @@ import engineer.thomas_werner.mailbackup.output.ConsoleWriter;
 import engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder;
 import engineer.thomas_werner.mailbackup.output.EmlFileWriter;
 import org.apache.commons.cli.*;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.mail.MessagingException;
 import java.nio.file.Paths;
@@ -21,12 +18,12 @@ import java.util.logging.Logger;
 
 import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAULT_PATTERN;
 
-@SpringBootApplication
-public class MailbackupApplication implements CommandLineRunner {
+public class MailbackupApplication {
 
     private static final String OPT_DELETE = "delete";
     private static final String OPT_OLDER_THAN = "olderThan";
     private static final String OPT_OUTPUT_DIR = "dir";
+    private static final String OPT_FLATTEN = "flatten";
     private static final String OPT_OUTPUT_PATTERN = "format";
     private static final String OPT_PASSWORD = "password";
     private static final String OPT_PORT = "port";
@@ -43,17 +40,13 @@ public class MailbackupApplication implements CommandLineRunner {
     private final EmlFileWriter emlFileWriter;
     private final EmlFileNameBuilder emlFileNameBuilder;
 
-    public MailbackupApplication(final ConsoleWriter consoleWriter,
-                                 final Loader loader,
-                                 final EmlFileWriter emlFileWriter,
-                                 final EmlFileNameBuilder emlFileNameBuilder) {
-        this.consoleWriter = consoleWriter;
-        this.loader = loader;
-        this.emlFileWriter = emlFileWriter;
-        this.emlFileNameBuilder = emlFileNameBuilder;
+    public MailbackupApplication() {
+        consoleWriter = new ConsoleWriter();
+        loader =  new Loader();
+        emlFileNameBuilder = new EmlFileNameBuilder();
+        emlFileWriter = new EmlFileWriter(emlFileNameBuilder);
     }
 
-    @Override
     public void run(String... args) {
         if(args.length == 0) {
             final HelpFormatter formatter = new HelpFormatter();
@@ -73,6 +66,7 @@ public class MailbackupApplication implements CommandLineRunner {
             loader.addMessageHandler(consoleWriter);
 
             emlFileNameBuilder.setFileNamePattern(line.hasOption(OPT_OUTPUT_PATTERN) ? line.getOptionValue(OPT_OUTPUT_PATTERN) : DEFAULT_PATTERN);
+            emlFileWriter.setFlattenStructure(line.hasOption(OPT_FLATTEN));
             emlFileWriter.setOutputFolder(Paths.get(line.hasOption(OPT_OUTPUT_DIR) ? line.getOptionValue(OPT_OUTPUT_DIR) : System.getProperty("user.dir")));
             loader.addMessageHandler(emlFileWriter);
 
@@ -119,6 +113,7 @@ public class MailbackupApplication implements CommandLineRunner {
                         .required(true)
                         .build())
                 .addOption(OPT_DELETE, false, "specify to delete mails on the server (after download)")
+                .addOption(OPT_FLATTEN, false, "will not use subfolders when storing eml files")
                 .addOption(OPT_OLDER_THAN, true, "only process messages up to given date, yyyy-MM-dd")
                 .addOption(OPT_OUTPUT_DIR, true, "directory to write the messages to")
                 .addOption(OPT_OUTPUT_PATTERN, true, "name pattern for the message files")
@@ -171,7 +166,7 @@ public class MailbackupApplication implements CommandLineRunner {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(MailbackupApplication.class, args);
+        new MailbackupApplication().run(args);
     }
 
 }

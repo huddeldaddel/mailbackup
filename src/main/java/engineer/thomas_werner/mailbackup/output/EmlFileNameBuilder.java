@@ -1,7 +1,5 @@
 package engineer.thomas_werner.mailbackup.output;
 
-import org.springframework.stereotype.Component;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -11,7 +9,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Component
 public class EmlFileNameBuilder {
 
     public static final String DEFAULT_PATTERN = "<date> - <sender> - <recipient> - <subject>";

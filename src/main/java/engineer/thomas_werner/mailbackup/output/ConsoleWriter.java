@@ -1,7 +1,6 @@
 package engineer.thomas_werner.mailbackup.output;
 
 import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
-import org.springframework.stereotype.Component;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -14,7 +13,6 @@ import java.util.Date;
  *
  * @author Thomas Werner
  */
-@Component
 public class ConsoleWriter implements MessageLoadedListener {
 
     private boolean verbose;

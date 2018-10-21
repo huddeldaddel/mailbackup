@@ -1,7 +1,6 @@
 package engineer.thomas_werner.mailbackup.input;
 
 import engineer.thomas_werner.mailbackup.domain.Configuration;
-import org.springframework.stereotype.Component;
 
 import javax.mail.*;
 import java.util.LinkedList;
@@ -16,7 +15,6 @@ import java.util.logging.Logger;
  *
  * @author Thomas Werner
  */
-@Component
 public class Loader {
 
     private final static Logger LOGGER = Logger.getLogger(Loader.class.getName());
@@ -86,7 +84,7 @@ public class Loader {
         }
     }
 
-    private void processMessage(Folder folder, final Message message) throws MessagingException {
+    private void processMessage(final Folder folder, final Message message) throws MessagingException {
         for(final MessageLoadedListener handler: messageHandlers) {
             try {
                 handler.messageLoaded(message, folder.getFullName());
