@@ -19,4 +19,9 @@ public interface MessageLoadedListener {
      */
     void messageLoaded(Message message, String folderName) throws MessagingException;
 
+    /**
+     * Invoked when the Loader finished.
+     */
+    void done();
+
 }

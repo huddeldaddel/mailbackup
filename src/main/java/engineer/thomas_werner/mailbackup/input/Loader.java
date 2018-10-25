@@ -59,6 +59,10 @@ public class Loader {
         } finally {
             if(null != store)
                 store.close();
+
+            for(final MessageLoadedListener handler: messageHandlers) {
+                handler.done();
+            }
         }
     }
 

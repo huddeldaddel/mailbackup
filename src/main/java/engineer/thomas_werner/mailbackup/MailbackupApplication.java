@@ -2,7 +2,7 @@ package engineer.thomas_werner.mailbackup;
 
 import engineer.thomas_werner.mailbackup.domain.Configuration;
 import engineer.thomas_werner.mailbackup.input.Loader;
-import engineer.thomas_werner.mailbackup.input.MessageRemover;
+import engineer.thomas_werner.mailbackup.output.MessageRemover;
 import engineer.thomas_werner.mailbackup.input.MinAgeFilter;
 import engineer.thomas_werner.mailbackup.output.ConsoleWriter;
 import engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder;
@@ -19,14 +19,14 @@ import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAUL
 public class MailbackupApplication {
 
     private static final String OPT_DELETE = "delete";
-    private static final String OPT_OLDER_THAN = "olderThan";
-    private static final String OPT_OUTPUT_DIR = "dir";
     private static final String OPT_FLATTEN = "flatten";
-    private static final String OPT_OUTPUT_PATTERN = "format";
+    private static final String OPT_HOSTNAME = "hostname";
+    private static final String OPT_NOSSL = "unencrypted";
+    private static final String OPT_OLDER_THAN = "olderThan";
+    private static final String OPT_OUTPUT_DIR = "out";
+    private static final String OPT_OUTPUT_PATTERN = "outpattern";
     private static final String OPT_PASSWORD = "password";
     private static final String OPT_PORT = "port";
-    private static final String OPT_SERVER = "hostname";
-    private static final String OPT_SSL = "ssl";
     private static final String OPT_USERNAME = "username";
 
     private final ConsoleWriter consoleWriter;
@@ -90,14 +90,14 @@ public class MailbackupApplication {
      */
     private static Options buildCmdOptions() {
         return new Options()
-                .addOption(Option.builder(OPT_SERVER)
+                .addOption(Option.builder(OPT_HOSTNAME)
                         .hasArg(true)
                         .desc("hostname of the IMAP server")
-                        .required(true)
+                        .required(false)
                         .build())
                 .addOption(Option.builder(OPT_USERNAME)
                         .hasArg(true)
-                        .desc("user name")
+                        .desc("username")
                         .required(true)
                         .build())
                 .addOption(Option.builder(OPT_PASSWORD)
@@ -105,13 +105,16 @@ public class MailbackupApplication {
                         .desc("password")
                         .required(true)
                         .build())
-                .addOption(OPT_DELETE, false, "specify to delete mails on the server (after download)")
-                .addOption(OPT_FLATTEN, false, "will not use subfolders when storing eml files")
-                .addOption(OPT_OLDER_THAN, true, "only process messages up to given date, yyyy-MM-dd")
-                .addOption(OPT_OUTPUT_DIR, true, "directory to write the messages to")
-                .addOption(OPT_OUTPUT_PATTERN, true, "name pattern for the message files")
-                .addOption(OPT_PORT, true, "port number of the IMAP server")
-                .addOption(OPT_SSL, false, "use SSL / TLS encryption");
+                .addOption(OPT_DELETE, false, "Delete mails from server after download")
+                .addOption(OPT_FLATTEN, false, "Will not use subfolders when storing eml files")
+                .addOption(OPT_OLDER_THAN, true, "Only process messages up to given date, YYYY-MM-DD")
+                .addOption(OPT_OUTPUT_DIR, true, "Directory to write the messages to")
+                .addOption(OPT_OUTPUT_PATTERN, true, "Name pattern for the message files. This " +
+                        "pattern can include the placeholders " + EmlFileNameBuilder.PLACEHOLDER_DATE + ", " +
+                        EmlFileNameBuilder.PLACEHOLDER_RECIPIENT + ", " + EmlFileNameBuilder.PLACEHOLDER_SENDER +
+                        " and " + EmlFileNameBuilder.PLACEHOLDER_SUBJECT)
+                .addOption(OPT_PORT, true, "Port number of the IMAP server")
+                .addOption(OPT_NOSSL, false, "Do not use SSL / TLS encryption");
     }
 
     /**
@@ -131,11 +134,6 @@ public class MailbackupApplication {
             return false;
         }
 
-        if(!line.hasOption(OPT_SERVER)) {
-            System.err.println("Please specify the host to be contacted");
-            return false;
-        }
-
         return true;
     }
 
@@ -149,10 +147,23 @@ public class MailbackupApplication {
                 System.exit(-1);
             }
         }
-        configuration.setHost(line.getOptionValue(OPT_SERVER));
+
+        if(line.hasOption(OPT_HOSTNAME)) {
+            configuration.setHost(line.getOptionValue(OPT_HOSTNAME));
+        } else {
+            final String username = line.getOptionValue(OPT_USERNAME);
+            if(0 < username.indexOf("@")) {
+                configuration.setHost(username.substring(username.indexOf("@") +1));
+            } else {
+                System.err.println("Unable to extract the hostname based on username.");
+                System.err.println("Please specify hostname parameter explitly");
+                System.exit(-1);
+            }
+        }
+
         configuration.setUser(line.getOptionValue(OPT_USERNAME));
         configuration.setPassword(line.getOptionValue(OPT_PASSWORD));
-        configuration.setSsl(line.hasOption(OPT_SSL));
+        configuration.setSsl(!line.hasOption(OPT_NOSSL));
         return configuration;
     }
 

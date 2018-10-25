@@ -54,6 +54,9 @@ public class EmlFileWriter implements MessageLoadedListener {
         }
     }
 
+    @Override
+    public void done() { }
+
     private File buildPath(final Message message, final String folderName) throws MessagingException {
         final File result;
         if (flattenStructure) {

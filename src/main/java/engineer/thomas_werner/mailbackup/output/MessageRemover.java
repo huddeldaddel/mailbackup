@@ -1,4 +1,6 @@
-package engineer.thomas_werner.mailbackup.input;
+package engineer.thomas_werner.mailbackup.output;
+
+import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
 
 import javax.mail.Flags;
 import javax.mail.Message;
@@ -10,5 +12,8 @@ public class MessageRemover implements MessageLoadedListener {
     public void messageLoaded(final Message message, final String folderName) throws MessagingException {
         message.setFlag(Flags.Flag.DELETED, true);
     }
+
+    @Override
+    public void done() { }
 
 }
