@@ -45,7 +45,7 @@ public class MailbackupApplication {
         if(args.length == 0) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.setOptionComparator(null);
-            formatter.printHelp("imap2eml", buildCmdOptions(), true);
+            formatter.printHelp("mailbackup", buildCmdOptions(), true);
             return;
         }
 
@@ -90,11 +90,6 @@ public class MailbackupApplication {
      */
     private static Options buildCmdOptions() {
         return new Options()
-                .addOption(Option.builder(OPT_HOSTNAME)
-                        .hasArg(true)
-                        .desc("hostname of the IMAP server")
-                        .required(false)
-                        .build())
                 .addOption(Option.builder(OPT_USERNAME)
                         .hasArg(true)
                         .desc("username")
@@ -104,6 +99,11 @@ public class MailbackupApplication {
                         .hasArg(true)
                         .desc("password")
                         .required(true)
+                        .build())
+                .addOption(Option.builder(OPT_HOSTNAME)
+                        .hasArg(true)
+                        .desc("hostname of the IMAP server")
+                        .required(false)
                         .build())
                 .addOption(OPT_DELETE, false, "Delete mails from server after download")
                 .addOption(OPT_FLATTEN, false, "Will not use subfolders when storing eml files")
