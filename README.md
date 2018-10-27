@@ -3,6 +3,15 @@
 MailBackup is a small commandline tool that can be used to download emails from an IMAP server and store them as EML 
 files on your computer.
 
+## Why use MailBackup instead of Thunderbird / Outlook?
+
+This program saves e-mails as EML files. [EML](http://www.ietf.org/rfc/rfc0822.txt) is a simple text format which is 
+supported by many e-mail programs. Under Windows, no additional software needs to be installed to view EML files. The 
+files also contain all header information and attachments in a single file.
+
+Thus the export as EML has some advantages over Outlook or Thunderbird data files, which can be exchanged badly. These
+are difficult to integrate - and can only be converted with a lot of manual effort when changing the mail client.
+
 ## Building the code and running tests
 
 MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and build with 
@@ -17,7 +26,7 @@ MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and b
 To run the application you need to have [Java](https://openjdk.java.net/projects/jdk/11/) installed on your machine.
 You don't need to build to software yourself - we have the 
 [latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v0.1.0/v0.1.0.zip) available for download. 
-Now unzip the mailbackup archive at the target location and you are ready to execute the program.
+Now unzip the MailBackup archive at the target location and you are ready to execute the program.
 
 ## Usage
 
@@ -25,9 +34,8 @@ Execute either mailbackup.sh (MacOS / Linux) oder mailbackup.ps1 (Windows). Basi
 `./mailbackup.ps1 -username <USERNAME> -password <PASSWORD>`. 
 There are several parameters that you can use to change the default behaviour:
 
-`mailbackup -username <arg> -password <arg> [-hostname <arg>]
-        [-delete] [-flatten] [-olderThan <arg>] [-out <arg>] 
-        [-outpattern <arg>] [-port <arg>] [-unencrypted]`
+`mailbackup -username <arg> -password <arg> [-hostname <arg>] [-delete] [-flatten] [-olderThan <arg>] [-out <arg>] 
+[-outpattern <arg>] [-port <arg>] [-unencrypted]`
  
  - **username &lt;arg&gt;**: This is the username that will be used to login.
  - **password &lt;arg&gt;**: The password that will be used to login.
