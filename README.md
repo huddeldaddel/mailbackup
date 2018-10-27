@@ -16,7 +16,7 @@ MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and b
 
 To run the application you need to have [Java](https://openjdk.java.net/projects/jdk/11/) installed on your machine.
 You don't need to build to software yourself - we have the 
-[latest release](https://github.com/huddeldaddel/mailbackup/archive/v0.1.0.zip) available for download. 
+[latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v0.1.0/v0.1.0.zip) available for download. 
 Now unzip the mailbackup archive at the target location and you are ready to execute the program.
 
 ## Usage
