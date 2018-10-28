@@ -2,11 +2,8 @@ package engineer.thomas_werner.mailbackup;
 
 import engineer.thomas_werner.mailbackup.domain.Configuration;
 import engineer.thomas_werner.mailbackup.input.Loader;
-import engineer.thomas_werner.mailbackup.output.MessageRemover;
+import engineer.thomas_werner.mailbackup.output.*;
 import engineer.thomas_werner.mailbackup.input.MinAgeFilter;
-import engineer.thomas_werner.mailbackup.output.ConsoleWriter;
-import engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder;
-import engineer.thomas_werner.mailbackup.output.EmlFileWriter;
 import org.apache.commons.cli.*;
 
 import javax.mail.MessagingException;
@@ -35,7 +32,7 @@ public class MailbackupApplication {
     private final EmlFileNameBuilder emlFileNameBuilder;
 
     public MailbackupApplication() {
-        consoleWriter = new ConsoleWriter();
+        consoleWriter = new ConsoleWriter(new OutputFormatter());
         loader =  new Loader();
         emlFileNameBuilder = new EmlFileNameBuilder();
         emlFileWriter = new EmlFileWriter(emlFileNameBuilder);

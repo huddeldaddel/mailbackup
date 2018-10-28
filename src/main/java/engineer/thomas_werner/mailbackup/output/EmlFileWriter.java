@@ -65,9 +65,10 @@ public class EmlFileWriter implements MessageLoadedListener {
                     fileNameBuilder.buildFileName(message)
             ).toFile();
         } else {
+
             result = Paths.get(
                     getOutputFolder().toString(),
-                    folderName.replaceAll("\\.", File.separator),
+                    new OutputFormatter().replaceFolderPathSeparator(folderName),
                     fileNameBuilder.buildFileName(message)
             ).toFile();
         }
@@ -84,7 +85,7 @@ public class EmlFileWriter implements MessageLoadedListener {
         } else {
             result = Paths.get(
                     getOutputFolder().toString(),
-                    folderName.replaceAll("\\.", File.separator),
+                    new OutputFormatter().replaceFolderPathSeparator(folderName),
                     fileNameBuilder.buildFileName(message, Integer.toString(idx))
             ).toFile();
         }
