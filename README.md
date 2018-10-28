@@ -25,7 +25,7 @@ MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and b
 
 To run the application you need to have [Java](https://openjdk.java.net/projects/jdk/11/) installed on your machine.
 You don't need to build to software yourself - we have the 
-[latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v0.1.0/v0.1.0.zip) available for download. 
+[latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v0.1.1/v0.1.1.zip) available for download. 
 Now unzip the MailBackup archive at the target location and you are ready to execute the program.
 
 ## Usage
@@ -54,7 +54,7 @@ There are several parameters that you can use to change the default behaviour:
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull 
+Please read [CONTRIBUTING](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull 
 requests to us.
 
 ## Versioning
@@ -68,7 +68,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC License 3 - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU GENERAL PUBLIC License 3 - see the [LICENSE](LICENSE.md) file for details
 
 ## Acknowledgments
 
