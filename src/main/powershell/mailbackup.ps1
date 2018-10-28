@@ -3,4 +3,4 @@ for ( $i = 0; $i -lt $args.count; $i++ ) {
     $javaargs += $args[$i]
 }
 
-Start-Process "java" -ArgumentList $javaargs
+Start-Process "java" -NoNewWindow -Wait -ArgumentList $javaargs
