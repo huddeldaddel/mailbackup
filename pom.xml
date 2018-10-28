@@ -5,7 +5,7 @@
 
 	<groupId>engineer.thomas_werner</groupId>
 	<artifactId>mailbackup</artifactId>
-	<version>0.1.0</version>
+	<version>0.1.1</version>
 	<packaging>jar</packaging>
 
 	<name>mailbackup</name>
@@ -59,7 +59,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <!-- latest version (2.20.1) does not work well with JUnit5 -->
                 <version>2.19.1</version>
                 <dependencies>
                     <dependency>
