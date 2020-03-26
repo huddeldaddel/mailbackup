@@ -1,4 +1,4 @@
-# MailBackup
+# MailBackup [![Build Status](https://dev.azure.com/huddeldaddel/Personal%20Projects/_apis/build/status/huddeldaddel.mailbackup?branchName=master)](https://dev.azure.com/huddeldaddel/Personal%20Projects/_build/latest?definitionId=8&branchName=master)
 
 MailBackup is a small commandline tool that can be used to download emails from an IMAP server and store them as EML 
 files on your computer.
