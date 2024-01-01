@@ -9,7 +9,6 @@ public class OutputFormatter {
      * the dots with the given separator String.
      *
      * @param folderName the IMAP foldername
-     * @param separator the new separator charater
      * @return foldername having dots replaced with separators
      */
     public String replaceFolderPathSeparator(final String folderName) {

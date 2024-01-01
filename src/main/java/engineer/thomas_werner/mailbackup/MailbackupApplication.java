@@ -27,15 +27,9 @@ public class MailbackupApplication {
     private static final String OPT_USERNAME = "username";
 
     private final ConsoleWriter consoleWriter;
-    private final Loader loader;
-    private final EmlFileWriter emlFileWriter;
-    private final EmlFileNameBuilder emlFileNameBuilder;
 
     public MailbackupApplication() {
         consoleWriter = new ConsoleWriter(new OutputFormatter());
-        loader =  new Loader();
-        emlFileNameBuilder = new EmlFileNameBuilder();
-        emlFileWriter = new EmlFileWriter(emlFileNameBuilder);
     }
 
     public void run(String... args) {
@@ -52,13 +46,23 @@ public class MailbackupApplication {
             if(!isOptionSetComplete(line))
                 return;
 
+            final Loader loader = new Loader();
             loader.addMessageHandler(consoleWriter);
 
-            emlFileNameBuilder.setFileNamePattern(line.hasOption(OPT_OUTPUT_PATTERN) ?
-                    line.getOptionValue(OPT_OUTPUT_PATTERN) : DEFAULT_PATTERN);
+            final EmlFileNameBuilder emlFileNameBuilder = new EmlFileNameBuilder();
+            emlFileNameBuilder.setFileNamePattern(
+                    line.hasOption(OPT_OUTPUT_PATTERN)
+                            ? line.getOptionValue(OPT_OUTPUT_PATTERN)
+                            : DEFAULT_PATTERN
+            );
+
+            final EmlFileWriter emlFileWriter = new EmlFileWriter(emlFileNameBuilder);
             emlFileWriter.setFlattenStructure(line.hasOption(OPT_FLATTEN));
-            emlFileWriter.setOutputFolder(Paths.get(line.hasOption(OPT_OUTPUT_DIR) ?
-                    line.getOptionValue(OPT_OUTPUT_DIR) : System.getProperty("user.dir")));
+            emlFileWriter.setOutputFolder(Paths.get(
+                    line.hasOption(OPT_OUTPUT_DIR)
+                            ? line.getOptionValue(OPT_OUTPUT_DIR)
+                            : System.getProperty("user.dir")
+            ));
             loader.addMessageHandler(emlFileWriter);
 
             if(line.hasOption(OPT_DELETE))
@@ -138,7 +142,7 @@ public class MailbackupApplication {
         final Configuration configuration = new Configuration();
         if(line.hasOption(OPT_PORT)) {
             try {
-                configuration.setPort(Integer.parseInt(line.getOptionValue(OPT_PORT)));
+                configuration.setPort(Integer.valueOf(line.getOptionValue(OPT_PORT)));
             } catch(final NumberFormatException ex) {
                 System.err.println("The port number has to be a numeric value. Typically 143 or 993.");
                 System.exit(-1);

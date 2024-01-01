@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 public class EmlFileNameBuilder {
 
     public static final String DEFAULT_PATTERN = "<date> - <sender> - <recipient> - <subject>";
+    public static final int MAX_FILENAME_LENGTH = 96;
 
     public static final String PLACEHOLDER_DATE = "<date>";
     public static final String PLACEHOLDER_SENDER = "<sender>";
@@ -56,17 +57,17 @@ public class EmlFileNameBuilder {
         String temp = getFileNamePattern().replace(PLACEHOLDER_DATE, getMessageDate(message));
         temp = temp.replace(PLACEHOLDER_SENDER, getSender(message));
         temp = temp.replace(PLACEHOLDER_RECIPIENT, getRecipient(message));
-        temp = temp.replace(PLACEHOLDER_SUBJECT, message.getSubject());
+        temp = temp.replace(PLACEHOLDER_SUBJECT, null == message.getSubject() ? "" : message.getSubject());
 
         // Replace all (possible) invalid characters
         temp = temp.replaceAll("[^a-zA-Z0-9\\.\\-\\ @]", "_");
 
         // restrict to max. 255 characters length
-        if (temp.length() > 250 - appendix.length())
-            temp.subSequence(0, 250 - appendix.length());
+        if (temp.length() > MAX_FILENAME_LENGTH - appendix.length())
+            temp = temp.subSequence(0, MAX_FILENAME_LENGTH - appendix.length()).toString();
 
         // append .eml suffix
-        return temp += appendix + ".eml";
+        return temp + appendix + ".eml";
     }
 
     /**
