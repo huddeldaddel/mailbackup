@@ -15,7 +15,7 @@ are difficult to integrate - and can only be converted with a lot of manual effo
 ## Building the code and running tests
 
 MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and build with 
-[Maven](https://maven.apache.org/). Once these tools are installed and configured, you can use Maven the build the code
+[Maven](https://maven.apache.org/). Once these tools are installed and configured, you can use Maven to build the code
  and execute tests. Maven's pom.xml uses the usual targets:
 
 * run `mvn test` to compile and test the code
@@ -25,7 +25,7 @@ MailBackup is written in [Java](https://openjdk.java.net/projects/jdk/11/) and b
 
 To run the application you need to have [Java](https://openjdk.java.net/projects/jdk/11/) installed on your machine.
 You don't need to build to software yourself - we have the 
-[latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v0.1.1/v0.1.1.zip) available for download. 
+[latest release](https://github.com/huddeldaddel/mailbackup/releases/download/v1.0.0/v1.0.0.zip) available for download. 
 Now unzip the MailBackup archive at the target location and you are ready to execute the program.
 
 ## Usage
