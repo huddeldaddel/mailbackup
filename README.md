@@ -33,26 +33,24 @@ Now unzip the MailBackup archive at the target location and you are ready to exe
 ## Usage
 
 Execute either mailbackup.sh (MacOS / Linux) oder mailbackup.ps1 (Windows). Basic usage works like this 
-`./mailbackup.ps1 -username <USERNAME> -password <PASSWORD>`. 
+`./mailbackup.ps1 -username <USERNAME> -hostname <HOSTNAME>`. 
 There are several parameters that you can use to change the default behaviour:
 
 `mailbackup -username <arg> -password <arg> [-hostname <arg>] [-delete] [-flatten] [-olderThan <arg>] [-out <arg>] 
 [-outpattern <arg>] [-port <arg>] [-unencrypted]`
  
- - **username &lt;arg&gt;**: This is the username that will be used to login.
- - **password &lt;arg&gt;**: The password that will be used to login.
- - **hostname &lt;arg&gt;**: Sets the hostname of the IMAP server that hosts the mailbox. This parameter is optional. If
-  you do not specify a hostname the program will try to guess it from your username - if that contains a @ sign.
- - **delete**: Be careful: this switch will delete all mails from server once they have been downloaded
- - **flatten**: Default behaviour is to rebuild the folder structure of the server locally. If you use this switch no
- folders will be created locally and all files will be written to the output directory directly. 
- - **olderThan &lt;arg&gt;**: This parameter works as a filter to process messages only if they are older than the date
- specified. The date value is expected to be given formatted as YYYY-MM-DD.
- - **out &lt;arg&gt;**: This changes the directory to write the messages to
- - **outpattern &lt;arg&gt;**: Sets a new naming pattern for the message files. This pattern can include the 
- placeholders *&lt;date&gt;*, *&lt;recipient&gt;*, *&lt;sender&gt;* and *&lt;subject&gt;*
- - **port &lt;arg&gt;**: Sets the port number of the IMAP server
- - **unencrypted**: Use this to use an unencrypted connection to the server (no SSL / TLS encryption)
+ | Option                          | Mandatory | Description                                                                                                                                                                                                |
+ | ------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+ | **username&nbsp;&lt;arg&gt;**   | yes       | This is the username that will be used to login.                                                                                                                                                           |
+ | **password&nbsp;&lt;arg&gt;**   | no        | The password that will be used to login. Program will show input prompt if parameter is not given.                                                                                                         |
+ | **hostname&nbsp;&lt;arg&gt;**   | no        | Sets the hostname of the IMAP server that hosts the mailbox. This parameter is optional. If you do not specify a hostname the program will try to guess it from your username - if that contains a @ sign. |
+ | **delete**                      | no        | Be careful: this switch will delete all mails from server once they have been downloaded.                                                                                                                  |
+ | **flatten**                     | no        | Default behaviour is to rebuild the folder structure of the server locally. If you use this switch no folders will be created locally and all files will be written to the output directory directly.      |
+ | **olderThan&nbsp;&lt;arg&gt;**  | no        | This parameter works as a filter to process messages only if they are older than the date specified. The date value is expected to be given formatted as YYYY-MM-DD.                                       |
+ | **out&nbsp;&lt;arg&gt;**        | no        | This changes the directory to write the messages to                                                                                                                                                        |
+ | **outpattern&nbsp;&lt;arg&gt;** | no        | Sets a new naming pattern for the message files. This pattern can include the placeholders *&lt;date&gt;*, *&lt;recipient&gt;*, *&lt;sender&gt;* and *&lt;subject&gt;*                                     |
+ | **port&nbsp;&lt;arg&gt;**       | no        | Sets the port number of the IMAP server                                                                                                                                                                    |
+ | **unencrypted**                 | no        | Use this to use an unencrypted connection to the server (no SSL / TLS encryption)                                                                                                                          |
 
 ## Contributing
 
@@ -70,7 +68,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC License 3 - see the [LICENSE](LICENSE.md) file for details
+This project is licensed under the Mozilla Public License Version 2.0 - see the [LICENSE](LICENSE.md) file for details.
 
 ## Acknowledgments
 
