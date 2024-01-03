@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.io.Console;
 
 import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAULT_PATTERN;
 
@@ -99,7 +100,7 @@ public class MailbackupApplication {
                 .addOption(Option.builder(OPT_PASSWORD)
                         .hasArg(true)
                         .desc("password")
-                        .required(true)
+                        .required(false)
                         .build())
                 .addOption(Option.builder(OPT_HOSTNAME)
                         .hasArg(true)
@@ -129,12 +130,6 @@ public class MailbackupApplication {
             System.err.println("Please specify a username for login");
             return false;
         }
-
-        if(!line.hasOption(OPT_PASSWORD)) {
-            System.err.println("Please specify a password for login");
-            return false;
-        }
-
         return true;
     }
 
@@ -163,7 +158,19 @@ public class MailbackupApplication {
         }
 
         configuration.setUser(line.getOptionValue(OPT_USERNAME));
-        configuration.setPassword(line.getOptionValue(OPT_PASSWORD));
+        if(line.hasOption(OPT_PASSWORD)) {
+            configuration.setPassword(line.getOptionValue(OPT_PASSWORD));
+        } else {
+            final Console console = System.console();
+            if (console == null) {
+                System.err.println("Please specify a password for login");
+                System.exit(-1);
+            }
+
+            final char[] password = console.readPassword("Enter password: ");
+            configuration.setPassword(String.valueOf(password));
+
+        }
         configuration.setSsl(!line.hasOption(OPT_NOSSL));
         return configuration;
     }
