@@ -1,19 +1,26 @@
 package engineer.thomas_werner.mailbackup.output;
 
-import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
+import engineer.thomas_werner.mailbackup.Filter;
+import engineer.thomas_werner.mailbackup.MessageContext;
 
 import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
-public class MessageRemover implements MessageLoadedListener {
+public class MessageRemover extends Filter {
 
     @Override
-    public void messageLoaded(final Message message, final String folderName) throws MessagingException {
-        message.setFlag(Flags.Flag.DELETED, true);
+    public String getName() {
+        return "MessageRemover";
     }
 
     @Override
-    public void done() { }
+    public void process(Message message, final MessageContext context) throws MessagingException {
+        message.setFlag(Flags.Flag.DELETED, true);
+
+        if(null != pipe) {
+            pipe.process(message, context);
+        }
+    }
 
 }

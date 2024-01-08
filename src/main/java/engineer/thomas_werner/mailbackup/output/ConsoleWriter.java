@@ -1,6 +1,7 @@
 package engineer.thomas_werner.mailbackup.output;
 
-import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
+import engineer.thomas_werner.mailbackup.Filter;
+import engineer.thomas_werner.mailbackup.MessageContext;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -10,40 +11,36 @@ import javax.mail.MessagingException;
  *
  * @author Thomas Werner
  */
-public class ConsoleWriter implements MessageLoadedListener {
+public class ConsoleWriter extends Filter {
 
-    private String folderName;
-    private String formattedFolderName;
-    private int mailCount;
-    private final OutputFormatter outputFormatter;
-
-    public ConsoleWriter(final OutputFormatter outputFormatter) {
-        this.outputFormatter = outputFormatter;
-    }
-
-    @Override
-    public void messageLoaded(final Message message, final String folderName) throws MessagingException {
-        if(folderName.equals(this.folderName)) {
-            mailCount++;
-            printOutput("\r" + formattedFolderName + ": " + mailCount);
-        } else {
-            final String wrap = null == this.folderName ? "" : "\n";
-            this.folderName = folderName;
-            formattedFolderName = outputFormatter.replaceFolderPathSeparator(folderName);
-            mailCount = 1;
-            printOutput(wrap + formattedFolderName + ": " + mailCount);
-        }
-    }
-
-    @Override
-    public void done() {
-        printOutput("\n");
-        folderName = null;
-        mailCount = 0;
-    }
+    String folderName = "";
 
     void printOutput(final String output) {
         System.out.print(output);
+    }
+
+    @Override
+    public String getName() {
+        return "ConsoleWriter";
+    }
+
+    @Override
+    public void process(final Message message, final MessageContext context) throws MessagingException {
+        if(!("".equals(this.folderName) || (this.folderName.equals(context.getFolderName())))) {
+            printOutput("\n");
+        }
+        if(!this.folderName.equals(context.getFolderName())) {
+            this.folderName = context.getFolderName();
+        }
+
+        final String formattedFolderName = new OutputFormatter().replaceFolderPathSeparator(folderName);
+        final int mailCnt = context.getFolderMessageCount();
+        final int mailIdx = context.getMessageIndex() + 1;
+        printOutput("\r" + formattedFolderName + ": " + mailIdx + "/" + mailCnt);
+
+        if(null != this.pipe) {
+            pipe.process(message, context);
+        }
     }
 
 }

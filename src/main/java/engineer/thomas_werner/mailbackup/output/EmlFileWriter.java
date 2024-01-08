@@ -1,6 +1,7 @@
 package engineer.thomas_werner.mailbackup.output;
 
-import engineer.thomas_werner.mailbackup.input.MessageLoadedListener;
+import engineer.thomas_werner.mailbackup.Filter;
+import engineer.thomas_werner.mailbackup.MessageContext;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -11,63 +12,55 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class EmlFileWriter implements MessageLoadedListener {
+public class EmlFileWriter extends Filter {
 
     private final EmlFileNameBuilder fileNameBuilder;
-    private boolean flattenStructure = false;
-    private Path outputFolder;
+    private final boolean flattenStructure;
+    private final Path outputFolder;
 
-    public EmlFileWriter(final EmlFileNameBuilder fileNameBuilder) {
+    public EmlFileWriter(EmlFileNameBuilder fileNameBuilder, Path outputFolder, boolean flattenStructure) {
         this.fileNameBuilder = fileNameBuilder;
-    }
-
-    public Path getOutputFolder() {
-        return outputFolder;
-    }
-
-    public void setOutputFolder(Path outputFolder) {
         this.outputFolder = outputFolder;
-    }
-
-    public boolean isFlattenStructure() {
-        return flattenStructure;
-    }
-
-    public void setFlattenStructure(boolean value) {
-        flattenStructure = value;
+        this.flattenStructure = flattenStructure;
     }
 
     @Override
-    public void messageLoaded(final Message message, final String folderName) throws MessagingException {
-        try {
-            if (!Files.exists(getOutputFolder()))
-                Files.createDirectories(getOutputFolder());
+    public String getName() {
+        return "EmlFileWriter";
+    }
 
-            final File path = buildPath(message, folderName);
+    @Override
+    public void process(final Message message, final MessageContext context) throws MessagingException {
+        try {
+            if (!Files.exists(outputFolder))
+                Files.createDirectories(outputFolder);
+
+            final File path = buildPath(message, context.getFolderName());
 
             if(!path.getParentFile().exists())
                 path.getParentFile().mkdirs();
 
             message.writeTo(new FileOutputStream(path));
+
+            if(null != pipe) {
+                pipe.process(message, context);
+            }
         } catch (IOException iox) {
             throw new MessagingException("Unable to write message to output directory: " + iox.getMessage(), iox);
         }
     }
 
-    @Override
-    public void done() { }
-
     private File buildPath(final Message message, final String folderName) throws MessagingException {
         final File result;
         if (flattenStructure) {
             result = Paths.get(
-                    getOutputFolder().toString(),
+                    outputFolder.toString(),
                     fileNameBuilder.buildFileName(message)
             ).toFile();
         } else {
 
             result = Paths.get(
-                    getOutputFolder().toString(),
+                    outputFolder.toString(),
                     new OutputFormatter().replaceFolderPathSeparator(folderName),
                     fileNameBuilder.buildFileName(message)
             ).toFile();
@@ -79,12 +72,12 @@ public class EmlFileWriter implements MessageLoadedListener {
         final File result;
         if(flattenStructure) {
             result = Paths.get(
-                    getOutputFolder().toString(),
+                    outputFolder.toString(),
                     fileNameBuilder.buildFileName(message, Integer.toString(idx))
             ).toFile();
         } else {
             result = Paths.get(
-                    getOutputFolder().toString(),
+                    outputFolder.toString(),
                     new OutputFormatter().replaceFolderPathSeparator(folderName),
                     fileNameBuilder.buildFileName(message, Integer.toString(idx))
             ).toFile();

@@ -1,4 +1,4 @@
-package engineer.thomas_werner.mailbackup.domain;
+package engineer.thomas_werner.mailbackup;
 
 import java.util.Optional;
 

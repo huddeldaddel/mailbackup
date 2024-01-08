@@ -1,10 +1,12 @@
 package engineer.thomas_werner.mailbackup.input;
 
+import engineer.thomas_werner.mailbackup.Filter;
+import engineer.thomas_werner.mailbackup.MessageContext;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import java.util.Date;
 
-public class MinAgeFilter implements MessageFilter {
+public class MinAgeFilter extends Filter {
 
     private final Date dateThreshold;
 
@@ -13,18 +15,28 @@ public class MinAgeFilter implements MessageFilter {
     }
 
     @Override
-    public boolean passes(final Message message) throws MessagingException {
-        if(null == dateThreshold)
-            return true;
+    public String getName() {
+        return "MinAgeFilter";
+    }
+
+    @Override
+    public void process(final Message message, final MessageContext context) throws MessagingException {
+        if(null == pipe) {
+            return;
+        }
+
+        if(null == dateThreshold) {
+            pipe.process(message, context);
+        }
 
         Date messageDate = message.getReceivedDate();
-        if(null == messageDate)
+        if(null == messageDate) {
             messageDate = message.getSentDate();
+        }
 
-        if(null == messageDate)
-            return true;
-
-        return messageDate.before(dateThreshold);
+        if((null == messageDate) || messageDate.before(dateThreshold)) {
+            pipe.process(message, context);
+        }
     }
 
 }

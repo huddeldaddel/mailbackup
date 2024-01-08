@@ -21,3 +21,4 @@ nbactions.xml
 
 # build artefacts
 /target/
+/nbproject/

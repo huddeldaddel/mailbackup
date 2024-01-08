@@ -1,6 +1,5 @@
 package engineer.thomas_werner.mailbackup;
 
-import engineer.thomas_werner.mailbackup.domain.Configuration;
 import engineer.thomas_werner.mailbackup.input.Loader;
 import engineer.thomas_werner.mailbackup.output.*;
 import engineer.thomas_werner.mailbackup.input.MinAgeFilter;
@@ -27,12 +26,6 @@ public class MailbackupApplication {
     private static final String OPT_PORT = "port";
     private static final String OPT_USERNAME = "username";
 
-    private final ConsoleWriter consoleWriter;
-
-    public MailbackupApplication() {
-        consoleWriter = new ConsoleWriter(new OutputFormatter());
-    }
-
     public void run(String... args) {
         if(args.length == 0) {
             final HelpFormatter formatter = new HelpFormatter();
@@ -47,34 +40,8 @@ public class MailbackupApplication {
             if(!isOptionSetComplete(line))
                 return;
 
-            final Loader loader = new Loader();
-            loader.addMessageHandler(consoleWriter);
-
-            final EmlFileNameBuilder emlFileNameBuilder = new EmlFileNameBuilder();
-            emlFileNameBuilder.setFileNamePattern(
-                    line.hasOption(OPT_OUTPUT_PATTERN)
-                            ? line.getOptionValue(OPT_OUTPUT_PATTERN)
-                            : DEFAULT_PATTERN
-            );
-
-            final EmlFileWriter emlFileWriter = new EmlFileWriter(emlFileNameBuilder);
-            emlFileWriter.setFlattenStructure(line.hasOption(OPT_FLATTEN));
-            emlFileWriter.setOutputFolder(Paths.get(
-                    line.hasOption(OPT_OUTPUT_DIR)
-                            ? line.getOptionValue(OPT_OUTPUT_DIR)
-                            : System.getProperty("user.dir")
-            ));
-            loader.addMessageHandler(emlFileWriter);
-
-            if(line.hasOption(OPT_DELETE))
-                loader.addMessageHandler(new MessageRemover());
-
-            if(line.hasOption(OPT_OLDER_THAN)) {
-                final String olderThan = line.getOptionValue(OPT_OLDER_THAN);
-                final Date lowerDateBound = new SimpleDateFormat("yyyy-MM-dd").parse(olderThan);
-                loader.addMessageFilter(new MinAgeFilter(lowerDateBound));
-            }
             try {
+                Loader loader = buildPipeline(line);
                 loader.start(buildConfiguration(line));
             } catch(final MessagingException me) {
                 System.err.println("An error occurred: " + me.getMessage() + "\n" + me.toString());
@@ -83,6 +50,42 @@ public class MailbackupApplication {
         } catch(final ParseException | java.text.ParseException exp) {
             System.err.println("Parsing cmd options failed. Reason: " + exp.getMessage());
         }
+        System.out.println();
+    }
+
+    Loader buildPipeline(final CommandLine line) throws java.text.ParseException {
+        final Loader loader = new Loader();
+
+        Filter latestFilter = loader.connect(new Pipe(new ConsoleWriter()));
+
+        if(line.hasOption(OPT_OLDER_THAN)) {
+            final String olderThan = line.getOptionValue(OPT_OLDER_THAN);
+            final Date lowerDateBound = new SimpleDateFormat("yyyy-MM-dd").parse(olderThan);
+            latestFilter = latestFilter.connect(new Pipe(new MinAgeFilter(lowerDateBound)));
+        }
+
+        final EmlFileNameBuilder emlFileNameBuilder = new EmlFileNameBuilder();
+        emlFileNameBuilder.setFileNamePattern(
+                line.hasOption(OPT_OUTPUT_PATTERN)
+                        ? line.getOptionValue(OPT_OUTPUT_PATTERN)
+                        : DEFAULT_PATTERN
+        );
+        final EmlFileWriter emlFileWriter = new EmlFileWriter(
+                emlFileNameBuilder,
+                Paths.get(line.hasOption(OPT_OUTPUT_DIR)
+                        ? line.getOptionValue(OPT_OUTPUT_DIR)
+                        : System.getProperty("user.dir")
+                ),
+                line.hasOption(OPT_FLATTEN)
+        );
+        latestFilter = latestFilter.connect(new Pipe(emlFileWriter));
+
+        if(line.hasOption(OPT_DELETE)) {
+            // Here the pipeline ends. To extends more filters latestFilter would have to be updated.
+            latestFilter.connect(new Pipe(new MessageRemover()));
+        }
+
+        return loader;
     }
 
     /**

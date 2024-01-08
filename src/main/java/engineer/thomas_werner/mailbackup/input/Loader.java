@@ -1,10 +1,10 @@
 package engineer.thomas_werner.mailbackup.input;
 
-import engineer.thomas_werner.mailbackup.domain.Configuration;
+import engineer.thomas_werner.mailbackup.Filter;
+import engineer.thomas_werner.mailbackup.Configuration;
+import engineer.thomas_werner.mailbackup.MessageContext;
 
 import javax.mail.*;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -13,26 +13,7 @@ import java.util.Properties;
  *
  * @author Thomas Werner
  */
-public class Loader {
-
-    private final List<MessageLoadedListener> messageHandlers = new LinkedList<>();
-    private final List<MessageFilter> filters = new LinkedList<>();
-
-    public void addMessageHandler(final MessageLoadedListener handler) {
-        messageHandlers.add(handler);
-    }
-
-    public void removeMessageHandler(final MessageLoadedListener handler) {
-        messageHandlers.remove(handler);
-    }
-
-    public void addMessageFilter(final MessageFilter filter) {
-        filters.add(filter);
-    }
-
-    public void removeMessageFilter(final MessageFilter filter) {
-        filters.remove(filter);
-    }
+public class Loader extends Filter {
 
     public void start(final Configuration conf) throws MessagingException {
         final String protocol = conf.isSsl() ? "imaps" : "imap";
@@ -59,34 +40,15 @@ public class Loader {
         } finally {
             if(null != store)
                 store.close();
-
-            for(final MessageLoadedListener handler: messageHandlers) {
-                handler.done();
-            }
         }
-    }
-
-    private boolean passesFilters(final Message message) throws MessagingException {
-        boolean result = true;
-        for(MessageFilter filter: filters)
-            result = result && filter.passes(message);
-        return result;
     }
 
     private void downloadMessages(final Folder folder) throws MessagingException {
-        for(int m=1; m<=folder.getMessageCount(); m++) {
+        final int messageCount = folder.getMessageCount();
+        for(int m=1; m<=messageCount; m++) {
             final Message message = folder.getMessage(m);
-            if(passesFilters(message))
-                processMessage(folder, message);
-        }
-    }
-
-    private void processMessage(final Folder folder, final Message message) throws MessagingException {
-        for(final MessageLoadedListener handler: messageHandlers) {
-            try {
-                handler.messageLoaded(message, folder.getFullName());
-            } catch(final Exception ex) {
-                System.err.println("The message " + message.getSubject() + " cannot be processed: " + ex.getMessage());
+            if(null != pipe) {
+                pipe.process(message, new MessageContext(folder.getFullName(), m -1, messageCount));
             }
         }
     }
@@ -104,6 +66,17 @@ public class Loader {
 
         for(final Folder subFolder: folder.list())
             processSubFolders(subFolder, false);
+    }
+
+
+    @Override
+    public String getName() {
+        return "Loader";
+    }
+
+    @Override
+    public void process(final Message message, final MessageContext context) throws MessagingException {
+        throw new UnsupportedOperationException("Not supported.");
     }
 
 }
