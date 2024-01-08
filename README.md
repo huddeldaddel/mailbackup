@@ -73,4 +73,3 @@ This project is licensed under the Mozilla Public License Version 2.0 - see the 
 ## Acknowledgments
 
 * **Billie Thompson** - *Markdown templates* - [PurpleBooth](https://github.com/PurpleBooth)
-
