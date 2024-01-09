@@ -25,6 +25,4 @@ public class FilterMock extends Filter {
         invokationCount++;
     }
 
-
-
 }

@@ -15,7 +15,7 @@ public class MessageRemover extends Filter {
     }
 
     @Override
-    public void process(Message message, final MessageContext context) throws MessagingException {
+    public void process(final Message message, final MessageContext context) throws MessagingException {
         message.setFlag(Flags.Flag.DELETED, true);
 
         if(null != pipe) {
