@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.mail.*;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Connects to the specified IMAP server using the specified login credentials. Lists all e-mails that are stored in the
@@ -15,6 +17,8 @@ import java.util.Properties;
  * @author Thomas Werner
  */
 public class Loader extends Filter {
+
+    private static final Logger logger = Logger.getLogger(Loader.class.getName());
 
     public void start(final Configuration conf) throws MessagingException {
         final String protocol = conf.isSsl() ? "imaps" : "imap";
@@ -34,7 +38,11 @@ public class Loader extends Filter {
                     store.connect(conf.getHost(), conf.getUser(), conf.getPassword());
                 }
             } catch(final MessagingException me) {
-                System.err.println("Unable to connect to " + conf.getHost() + " as " + conf.getUser() + ": " + me.getMessage());
+                logger.log(
+                        Level.SEVERE,
+                        "Unable to connect to {0} as {1}: {2}",
+                        new Object[]{conf.getHost(), conf.getUser(), me.getMessage()}
+                );
                 return;
             }
 

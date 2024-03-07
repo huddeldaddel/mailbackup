@@ -12,6 +12,7 @@ import java.util.Date;
 import java.io.Console;
 
 import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAULT_PATTERN;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
