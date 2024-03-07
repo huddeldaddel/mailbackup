@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OutputFormatterTest {
+class OutputFormatterTest {
 
     private OutputFormatter outputFormatter;
 
@@ -15,13 +15,13 @@ public class OutputFormatterTest {
     }
 
     @Test
-    public void replaceFolderPathSeparatorLinuxStyle() {
+    void replaceFolderPathSeparatorLinuxStyle() {
         assertEquals("INBOX", outputFormatter.replaceFolderPathSeparator("INBOX", "/"));
         assertEquals("INBOX/Test1/Test2", outputFormatter.replaceFolderPathSeparator("INBOX.Test1.Test2", "/"));
     }
 
     @Test
-    public void replaceFolderPathSeparatorWindowsStyle() {
+    void replaceFolderPathSeparatorWindowsStyle() {
         assertEquals("INBOX", outputFormatter.replaceFolderPathSeparator("INBOX", "\\"));
         assertEquals("INBOX\\Test1\\Test2", outputFormatter.replaceFolderPathSeparator("INBOX.Test1.Test2", "\\"));
     }

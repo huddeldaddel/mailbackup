@@ -3,6 +3,7 @@ package engineer.thomas_werner.mailbackup.input;
 import engineer.thomas_werner.mailbackup.Filter;
 import engineer.thomas_werner.mailbackup.Configuration;
 import engineer.thomas_werner.mailbackup.MessageContext;
+import java.util.Optional;
 
 import javax.mail.*;
 import java.util.Properties;
@@ -26,7 +27,8 @@ public class Loader extends Filter {
 
             store = session.getStore(protocol);
             try {
-                if(conf.getPort().isPresent()) {
+                final Optional<Integer> port = conf.getPort();
+                if(port.isPresent()) {
                     store.connect(conf.getHost(), conf.getPort().get(), conf.getUser(), conf.getPassword());
                 } else {
                     store.connect(conf.getHost(), conf.getUser(), conf.getPassword());
