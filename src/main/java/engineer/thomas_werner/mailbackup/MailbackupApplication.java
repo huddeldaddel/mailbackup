@@ -40,13 +40,10 @@ public class MailbackupApplication {
             if(!isOptionSetComplete(line))
                 return;
 
-            try {
-                Loader loader = buildPipeline(line);
-                loader.start(buildConfiguration(line));
-            } catch(final MessagingException me) {
-                System.err.println("An error occurred: " + me.getMessage() + "\n" + me.toString());
-            }
-
+            final Loader loader = buildPipeline(line);
+            loader.start(buildConfiguration(line));
+        } catch(final MessagingException me) {
+          System.err.println("An error occurred: " + me.getMessage() + "\n" + me.toString());
         } catch(final ParseException | java.text.ParseException exp) {
             System.err.println("Parsing cmd options failed. Reason: " + exp.getMessage());
         }
@@ -97,12 +94,12 @@ public class MailbackupApplication {
         return new Options()
                 .addOption(Option.builder(OPT_USERNAME)
                         .hasArg(true)
-                        .desc("username")
+                        .desc("username for login")
                         .required(true)
                         .build())
                 .addOption(Option.builder(OPT_PASSWORD)
                         .hasArg(true)
-                        .desc("password")
+                        .desc("password for login")
                         .required(false)
                         .build())
                 .addOption(Option.builder(OPT_HOSTNAME)
@@ -151,7 +148,7 @@ public class MailbackupApplication {
             configuration.setHost(line.getOptionValue(OPT_HOSTNAME));
         } else {
             final String username = line.getOptionValue(OPT_USERNAME);
-            if(0 < username.indexOf("@")) {
+            if(username.contains("@")) {
                 configuration.setHost(username.substring(username.indexOf("@") +1));
             } else {
                 System.err.println("Unable to extract the hostname based on username.");

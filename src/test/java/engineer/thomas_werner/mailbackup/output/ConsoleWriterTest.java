@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Thomas Werner
  */
-public class ConsoleWriterTest {
+class ConsoleWriterTest {
 
     @Test
-    public void testOutput() throws Exception {
+    void testOutput() throws Exception {
         final TestConsoleWriter writer = new TestConsoleWriter();
         writer.process(null, new MessageContext("INPUT", 0, 2));
         writer.process(null, new MessageContext("INPUT", 1, 2));
@@ -43,7 +43,7 @@ public class ConsoleWriterTest {
     }
 
     @Test
-    public void testPipeline() throws Exception {
+    void testPipeline() throws Exception {
         final TestConsoleWriter writer = new TestConsoleWriter();
         final FilterMock filterMock = new FilterMock();
         writer.connect(new Pipe(filterMock));

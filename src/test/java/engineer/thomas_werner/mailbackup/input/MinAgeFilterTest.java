@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Thomas Werner
  */
-public class MinAgeFilterTest {
+class MinAgeFilterTest {
 
     public MinAgeFilterTest() {
     }
 
     @Test
-    public void testProcessInMailOlder() throws Exception {
+    void testProcessInMailOlder() throws Exception {
         final Message inOnMonday = new MessageWithDateMock(new GregorianCalendar(2024, 1, 8).getTime(), null);
 
         final MinAgeFilter minAgeFilter = new MinAgeFilter(new GregorianCalendar(2024, 1, 9).getTime());
@@ -33,7 +33,7 @@ public class MinAgeFilterTest {
     }
 
     @Test
-    public void testProcessInMailSameDay() throws Exception {
+    void testProcessInMailSameDay() throws Exception {
         final Message inOnTuesday = new MessageWithDateMock(new GregorianCalendar(2024, 1, 9).getTime(), null);
 
         final MinAgeFilter minAgeFilter = new MinAgeFilter(new GregorianCalendar(2024, 1, 9).getTime());
@@ -45,7 +45,7 @@ public class MinAgeFilterTest {
     }
 
     @Test
-    public void testProcessOutMailOlder() throws Exception {
+    void testProcessOutMailOlder() throws Exception {
         final Message outOnMonday = new MessageWithDateMock(null, new GregorianCalendar(2024, 1, 8).getTime());
 
         final MinAgeFilter minAgeFilter = new MinAgeFilter(new GregorianCalendar(2024, 1, 9).getTime());
@@ -57,7 +57,7 @@ public class MinAgeFilterTest {
     }
 
     @Test
-    public void testProcessOutMailSameDay() throws Exception {
+    void testProcessOutMailSameDay() throws Exception {
         final Message outOnTuesday = new MessageWithDateMock(null, new GregorianCalendar(2024, 1, 9).getTime());
 
         final MinAgeFilter minAgeFilter = new MinAgeFilter(new GregorianCalendar(2024, 1, 9).getTime());
