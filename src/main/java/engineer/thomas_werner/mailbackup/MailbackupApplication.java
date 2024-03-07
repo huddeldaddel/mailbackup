@@ -12,6 +12,8 @@ import java.util.Date;
 import java.io.Console;
 
 import static engineer.thomas_werner.mailbackup.output.EmlFileNameBuilder.DEFAULT_PATTERN;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MailbackupApplication {
 
@@ -26,7 +28,9 @@ public class MailbackupApplication {
     private static final String OPT_PORT = "port";
     private static final String OPT_USERNAME = "username";
 
-    public void run(String... args) {
+    private static final Logger logger = Logger.getLogger(MailbackupApplication.class.getName());
+
+    private void run(String... args) {
         if(args.length == 0) {
             final HelpFormatter formatter = new HelpFormatter();
             formatter.setOptionComparator(null);
@@ -43,9 +47,9 @@ public class MailbackupApplication {
             final Loader loader = buildPipeline(line);
             loader.start(buildConfiguration(line));
         } catch(final MessagingException me) {
-          System.err.println("An error occurred: " + me.getMessage() + "\n" + me.toString());
+            logger.log(Level.SEVERE, "An error occurred: {0}\n{1}", new Object[]{me.getMessage(), me.toString()});
         } catch(final ParseException | java.text.ParseException exp) {
-            System.err.println("Parsing cmd options failed. Reason: " + exp.getMessage());
+            logger.log(Level.SEVERE, "Parsing cmd options failed. Reason: {0}", exp.getMessage());
         }
         System.out.println();
     }
@@ -127,7 +131,7 @@ public class MailbackupApplication {
      */
     private static boolean isOptionSetComplete(final CommandLine line) {
         if(!line.hasOption(OPT_USERNAME)) {
-            System.err.println("Please specify a username for login");
+            logger.log(Level.SEVERE, "Please specify a username for login");
             return false;
         }
         return true;
@@ -139,7 +143,7 @@ public class MailbackupApplication {
             try {
                 configuration.setPort(Integer.valueOf(line.getOptionValue(OPT_PORT)));
             } catch(final NumberFormatException ex) {
-                System.err.println("The port number has to be a numeric value. Typically 143 or 993.");
+                logger.log(Level.SEVERE, "The port number has to be a numeric value. Typically 143 or 993.");
                 System.exit(-1);
             }
         }
@@ -151,8 +155,8 @@ public class MailbackupApplication {
             if(username.contains("@")) {
                 configuration.setHost(username.substring(username.indexOf("@") +1));
             } else {
-                System.err.println("Unable to extract the hostname based on username.");
-                System.err.println("Please specify hostname parameter explitly");
+                logger.log(Level.SEVERE, "Unable to extract the hostname based on username.");
+                logger.log(Level.SEVERE, "Please specify hostname parameter explitly");
                 System.exit(-1);
             }
         }
@@ -163,7 +167,7 @@ public class MailbackupApplication {
         } else {
             final Console console = System.console();
             if (console == null) {
-                System.err.println("Please specify a password for login");
+                logger.log(Level.SEVERE, "Please specify a password for login");
                 System.exit(-1);
             }
 
