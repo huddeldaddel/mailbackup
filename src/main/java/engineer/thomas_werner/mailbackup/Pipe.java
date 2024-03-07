@@ -1,5 +1,7 @@
 package engineer.thomas_werner.mailbackup;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.mail.Message;
 
 /**
@@ -8,6 +10,8 @@ import javax.mail.Message;
  * @author Thomas Werner
  */
 public class Pipe {
+
+    private static final Logger logger = Logger.getLogger(Pipe.class.getName());
 
     private final Filter filter;
 
@@ -24,7 +28,11 @@ public class Pipe {
             try {
                 filter.process(message, context);
             } catch(final Exception ex) {
-                System.err.println("Filter " + filter.getName() + " threw Exception: " + ex.getMessage());
+                logger.log(
+                        Level.SEVERE,
+                        "Filter {0} threw Exception: {1}",
+                        new Object[]{filter.getName(), ex.getMessage()}
+                );
             }
         }
     }
