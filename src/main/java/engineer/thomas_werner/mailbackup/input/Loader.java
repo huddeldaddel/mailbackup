@@ -29,7 +29,7 @@ public class Loader extends Filter {
             try {
                 final Optional<Integer> port = conf.getPort();
                 if(port.isPresent()) {
-                    store.connect(conf.getHost(), conf.getPort().get(), conf.getUser(), conf.getPassword());
+                    store.connect(conf.getHost(), port.get(), conf.getUser(), conf.getPassword());
                 } else {
                     store.connect(conf.getHost(), conf.getUser(), conf.getPassword());
                 }
